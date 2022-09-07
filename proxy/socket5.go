@@ -239,9 +239,17 @@ func (s *Socket5) Transport(out chan<- error, originConn net.Conn, targetConn ne
 		if readLen > 0 {
 			buff = buff[0:readLen]
 			if role == SocketServer {
-				s.client.proxy.OnSocket5ResponseEvent(buff)
+				userBuf := s.client.proxy.OnSocket5ResponseEvent(buff)
+				if userBuf != nil {
+					buff = userBuf
+					readLen = len(buff)
+				}
 			} else {
-				s.client.proxy.OnSocket5RequestEvent(buff)
+				userBuf := s.client.proxy.OnSocket5RequestEvent(buff)
+				if userBuf != nil {
+					buff = userBuf
+					readLen = len(buff)
+				}
 			}
 			writeLen, err := targetConn.Write(buff)
 			if writeLen < 0 || readLen < writeLen {

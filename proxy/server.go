@@ -17,8 +17,8 @@ type Client struct {
 type Server struct {
 	port                   int
 	listener               *net.TCPListener
-	OnSocket5ResponseEvent func(message []byte)
-	OnSocket5RequestEvent  func(message []byte)
+	OnSocket5ResponseEvent func(message []byte) (out []byte)
+	OnSocket5RequestEvent  func(message []byte) (out []byte)
 	Clients                map[string]interface{}
 }
 type Protocol interface {
