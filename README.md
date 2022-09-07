@@ -6,14 +6,21 @@
 ```go
     //构建代理
     s := proxy.NewServer(1888)
-	//客户端发送到游戏服务端前注入
-	s.OnSocket5RequestEvent = func(message []byte) {
-		log.Log.Println("send", string(message))
-	}
-	//游戏服务端发送到客户端前注入
-	s.OnSocket5ResponseEvent = func(message []byte) {
-		log.Log.Println("recv", string(message))
-	}
+    s.OnSocket5RequestEvent = func(message []byte) (out []byte) {
+        log.Log.Println("send", string(message))
+        if strings.Index(string(message), "123") != -1 {
+            out = []byte("hack Send 123\n")
+        }
+        return
+    }
+    s.OnSocket5ResponseEvent = func(message []byte) (out []byte) {
+        log.Log.Println("recv", string(message))
+        if strings.Index(string(message), "123") != -1 {
+            out = []byte("hack recv 123\n")
+        }
+        return
+    }
+	
 	//启动代理
     go s.Start()
 
