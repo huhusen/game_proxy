@@ -93,6 +93,7 @@ func (s *Server) handle(conn net.Conn) {
 	default:
 		log.Log.Info("tcp.")
 	}
+	s.Clients = make(map[string]interface{})
 	s.Clients[conn.RemoteAddr().String()] = protocol
 	protocol.Handle()
 }
