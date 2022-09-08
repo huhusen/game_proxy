@@ -3,6 +3,7 @@ module sockets-proxy
 go 1.18
 
 require (
+	github.com/google/gopacket v1.1.19
 	github.com/husanpao/logrus-easy-formatter v0.0.0-20220819075302-5c8aca273d21
 	github.com/husanpao/timewriter v0.0.0-20220819075236-e7d649ec683c
 	github.com/sirupsen/logrus v1.8.1

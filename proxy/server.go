@@ -49,10 +49,10 @@ func (s *Server) logo() {
 /   __\/  _  \/  \/  \/   __\ ___ /  _  \/  _  \/  _  \/  \/  \\  |  /
 |  |_ ||  _  ||  \/  ||   __|<___>|   __/|  _  <|  |  |>-    -< |   | 
 \_____/\__|__/\__ \__/\_____/     \__/   \__|\_/\_____/\__/\__/ \___/ 
-
+			game_proxy 1.0
 `
-	log.Log.Info(logo)
-	log.Log.Infof("代理监听端口:0.0.0.0:%d", s.port)
+	fmt.Println(logo)
+	fmt.Println("代理监听端口:0.0.0.0:", s.port)
 }
 func (s *Server) multiListen() {
 	for i := 0; i < 5; i++ {

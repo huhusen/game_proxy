@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"crypto/tls"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -34,11 +35,13 @@ const (
 
 func (s *Socket5) Send2Server(data []byte) {
 	if s.state {
+		log.Log.Infof("Send2Server :%s", hex.EncodeToString(data))
 		s.remote.Write(data)
 	}
 }
 func (s *Socket5) Send2client(data []byte) {
 	if s.state {
+		log.Log.Infof("Send2client :%s", hex.EncodeToString(data))
 		s.client.conn.Write(data)
 	}
 }
@@ -189,7 +192,7 @@ func (s *Socket5) Handle() {
 			s.remote, err = net.DialTimeout("tcp", hostname, time.Second*30)
 		}
 	}
-	log.Log.Println("待连接的目标服务器：" + hostname)
+	log.Log.Println("正在连接目标服务器：" + hostname)
 	// 写入Rep
 	if err != nil {
 		log.Log.Println("连接目标服务器失败：" + hostname + " " + err.Error())
@@ -224,6 +227,7 @@ func (s *Socket5) Handle() {
 		return
 	}
 	s.state = true
+	log.Log.Println("目标服务器："+hostname, "链接成功.")
 	out := make(chan error, 2)
 	if command == 0x01 {
 		go s.Transport(out, s.client.conn, s.remote, SocketClient)
@@ -233,8 +237,8 @@ func (s *Socket5) Handle() {
 }
 
 func (s *Socket5) Transport(out chan<- error, originConn net.Conn, targetConn net.Conn, role string) {
-	buff := make([]byte, 10*1024)
 	for {
+		buff := make([]byte, 10*1024)
 		readLen, err := originConn.Read(buff)
 		if readLen > 0 {
 			buff = buff[0:readLen]
@@ -270,6 +274,6 @@ func (s *Socket5) Transport(out chan<- error, originConn net.Conn, targetConn ne
 			}
 			break
 		}
-		buff = buff[:]
+		buff = nil
 	}
 }
