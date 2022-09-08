@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>游戏代理工具</title>
+
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+
+<body style="padding: 0px 100px">
+<div>
+    <button id="start" onclick="start()">启动</button>
+    <button id="stop" onclick="stop()">停止</button>
+
+</div>
+
+<fieldset style="margin-top: 20px;height: 500px;float: left;width: 1000px;">
+    <legend id="mt">Message</legend>
+    <div id="msg" style="height:100%;overflow: auto;width: 1000px;">
+    </div>
+</fieldset>
+
+<fieldset style="margin-top: 20px;height: 500px;width: 300px; float: left;">
+    <legend>Task</legend>
+    <div id="task" style="height:100%;overflow: auto;width: 300px;">
+
+    </div>
+</fieldset>
+<div style="clear: both;"></div>
+
+<fieldset style="margin-top: 20px;height: 50px;width: 1330px;">
+    <legend>Send</legend>
+    <input type="text" id="send" style="height: 100%;width: 100%;">
+</fieldset>
+</body>
+<script src="jquery-3.6.1.min.js"></script>
+<script>
+    let msgCount = 0;
+    let taskCount = 0;
+    let msgElement = document.getElementById('msg');
+    let taskElement = document.getElementById('task');
+    msg = function (message) {
+        if (typeof message == 'object') {
+            msgElement.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+        } else {
+            msgElement.innerHTML += message + '<br />';
+        }
+        msgCount++
+        if (msgCount == 100) {
+            msgElement.innerHTML = ""
+            msgCount = 0
+        }
+        msgElement.scrollTop = msgElement.scrollHeight;
+    }
+    task = function (message) {
+        if (typeof message == 'object') {
+            taskElement.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+        } else {
+            taskElement.innerHTML += message + '<br />';
+        }
+        taskCount++
+        if (taskCount == 20) {
+            taskElement.innerHTML = ""
+            taskCount = 0
+        }
+        taskElement.scrollTop = taskElement.scrollHeight;
+    }
+
+
+    $(function () {
+        $("#send").keydown(function (event) {
+            if (event.keyCode == 13) {
+                let arr = $(this).val().split(" ")
+                if (arr.length != 2) {
+                    return
+                }
+                $.get("/send?count=" + arr[1] + "&cmd=" + arr[0], function (r) {
+                    msg(r)
+                });
+                task($(this).val())
+                $(this).val("")
+            }
+        });
+
+    })
+
+    function start() {
+        $.get("/start", function (r) {
+            msg(r)
+        });
+        msgHandle()
+    }
+
+    function stop() {
+
+    }
+
+    function msgHandle() {
+        let evsrc = new EventSource("/msg?stream=msg");
+        evsrc.onmessage = function (ev) {
+            msg(ev.data)
+        }
+        evsrc.onerror = function (ev) {
+            msg("readyState = " + ev.currentTarget.readyState);
+        }
+    }
+</script>
+
+</html>
