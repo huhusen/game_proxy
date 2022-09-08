@@ -87,7 +87,7 @@ func (s *Server) handle(conn net.Conn) {
 	switch peekHex {
 	case "0x47", "0x43", "0x50", "0x4f", "0x44", "0x48":
 		log.Log.Info("http.")
-		break
+
 	case "0x5":
 		protocol = &Socket5{client: client, state: false}
 	default:

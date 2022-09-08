@@ -1,18 +1,34 @@
 package gcld
 
 import (
+	"encoding/json"
 	"fmt"
+	"sockets-proxy/log"
 	"sockets-proxy/util"
 )
 
-type SendData struct {
-	Len     int32
-	Command string
-	Token   int32
-	Body    string
+type sendData struct {
+	Len     int32  `json:"len"`
+	Command CMD    `json:"command"`
+	Token   int32  `json:"token"`
+	Body    string `json:"body"`
 }
 
-func NewSendData(buf []byte) (s SendData) {
+func (s sendData) String() string {
+	body, err := json.Marshal(s)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	return string(body)
+}
+func (s sendData) Bytes() []byte {
+	body, err := json.Marshal(s)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	return body
+}
+func NewSendData(buf []byte) (s sendData) {
 	reader := util.NewBinaryReader(buf)
 	dataLen := reader.ReadInt32()
 	if len(buf)-4 != int(dataLen) {
@@ -21,17 +37,17 @@ func NewSendData(buf []byte) (s SendData) {
 	cmd := string(reader.ReadBytes(32))
 	t := reader.ReadInt32()
 	body := string(reader.ReadBytes(int(dataLen) - 36))
-	s = SendData{
+	s = sendData{
 		Len:     dataLen,
-		Command: cmd,
+		Command: CMD(cmd),
 		Token:   t,
 		Body:    body,
 	}
 	return
 }
-func (s SendData) Print() {
+func (s sendData) Print() {
 	if s.Len == 0 {
 		return
 	}
-	fmt.Printf("\nSendData:\nLen:%d\nCommand:%s\nToken:%d\nBody:%s \n", s.Len, s.Command, s.Token, s.Body)
+	log.Log.Printf("\nSendData:\nLen:%d\nCommand:%s\nToken:%d\nBody:%s \n", s.Len, s.Command, s.Token, s.Body)
 }
