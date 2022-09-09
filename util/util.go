@@ -3,6 +3,7 @@ package util
 import (
 	"bytes"
 	"compress/zlib"
+	"encoding/json"
 	"io"
 	"net"
 	"strings"
@@ -10,6 +11,29 @@ import (
 
 func NewBuf(len int) []byte {
 	return make([]byte, len)
+}
+
+//dynamic := make(map[string]interface{})
+
+func NewMap(param interface{}) map[string]interface{} {
+	m := make(map[string]interface{})
+	switch param.(type) {
+	case string:
+		str := param.(string)
+		arr := strings.Split(str, "=")
+		if len(arr)%2 != 0 {
+			return nil
+		} else {
+			for i := 0; i < len(arr); i = i + 2 {
+				m[arr[i]] = arr[i+1]
+			}
+		}
+	case []byte:
+		json.Unmarshal(param.([]byte), &m)
+		m = m["action"].(map[string]interface{})
+		m = m["data"].(map[string]interface{})
+	}
+	return m
 }
 
 // ZlibCompress 进行zlib压缩

@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"github.com/r3labs/sse/v2"
 	"net/http"
+	"os/exec"
 	"sockets-proxy/gcld"
 	"sockets-proxy/proxy"
 	"strconv"
+	"syscall"
 	"time"
 )
 
@@ -19,18 +21,22 @@ var (
 	bot       gcld.Bot
 )
 
+func PushMsg(id, data string) {
+	sseServer.Publish(id, &sse.Event{Data: []byte(data)})
+}
+
 func OnSocket5RequestEvent(message []byte) (out []byte) {
-	sseServer.Publish("msg", &sse.Event{Data: []byte(hex.EncodeToString(message))})
 	s := gcld.NewSendData(message)
 	bot.Handle(gcld.NewSendData(message))
-	sseServer.Publish("msg", &sse.Event{Data: s.Bytes()})
+	PushMsg("msg", hex.EncodeToString(s.Data))
+	PushMsg("msg", s.String())
 	return
 }
 
 func OnSocket5ResponseEvent(message []byte) (out []byte) {
 	r := gcld.NewRecvData(message)
 	bot.Handle(r)
-	sseServer.Publish("msg", &sse.Event{Data: r.Bytes()})
+	PushMsg("msg", r.String())
 	return
 }
 
@@ -66,8 +72,13 @@ func main() {
 		}(c, b)
 		writer.Write([]byte("send success."))
 	})
-
-	http.ListenAndServe(":8080", nil)
+	go func() {
+		time.Sleep(time.Second * 1)
+		cmd := exec.Command(`cmd`, `/c`, `start`, `http://127.0.0.1:36134/ui/`)
+		cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+		cmd.Start()
+	}()
+	http.ListenAndServe(":36134", nil)
 
 	//n := pcap.NewCaptureUnPack("C:\\Users\\uma-pc001\\Desktop\\fsdownload\\gcld2.pcapng")
 	//b := gcld.NewBot()
