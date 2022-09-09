@@ -2,6 +2,7 @@ package gcld
 
 import (
 	"encoding/hex"
+	"fmt"
 	"sockets-proxy/util"
 	"testing"
 )
@@ -12,6 +13,8 @@ func TestLogin(t *testing.T) {
 		panic(err)
 	}
 	cmd := NewSendData(buf)
+
+	fmt.Println(cmd.String())
 	cmd.Print()
 }
 func TestRecv(t *testing.T) {

@@ -3,11 +3,11 @@ package gcld
 import (
 	"encoding/json"
 	"fmt"
-	"sockets-proxy/log"
 	"sockets-proxy/util"
 )
 
 type recData struct {
+	Data    []byte `json:"-"`
 	Len     int32  `json:"len"`
 	Command CMD    `json:"command"`
 	Token   int32  `json:"token"`
@@ -49,5 +49,5 @@ func (r recData) Print() {
 	if r.Len == 0 {
 		return
 	}
-	log.Log.Printf("\nRecvData:\nLen:%d\nCommand:%s\nToken:%d\nBody:%s \n", r.Len, r.Command, r.Token, r.Body)
+	fmt.Printf("RecvData:【%s】\nLen:%d\nCommand:%s\nToken:%d\nBody:%s \n", ToCMD(r.Command), r.Len, r.Command, r.Token, r.Body)
 }
