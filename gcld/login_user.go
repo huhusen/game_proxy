@@ -22,12 +22,12 @@ func NewLoginUserInfo() *LoginUserInfo {
 	return &LoginUserInfo{}
 }
 func (l LoginUserInfo) UpdateRec(data []byte) {
-	m := util.NewMap(data)
-	l.Rec.sessionId = m["sessionId"].(string)
+	m := util.NewJSon(data)
+	l.Rec.sessionId = m.Get("sessionId").MustString("")
 }
 func (l LoginUserInfo) UpdateSend(data string) {
 	m := util.NewMap(data)
-	l.Send.userkey = m["userkey"].(string)
+	l.Send.userkey = m["userkey"]
 }
 func (l LoginUserInfo) Data() []byte {
 	body := fmt.Sprintf("userkey=%s", l.Send.userkey)

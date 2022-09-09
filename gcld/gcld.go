@@ -11,6 +11,7 @@ type Bot struct {
 }
 type M interface {
 	Data() []byte
+	Hex()
 }
 type B struct {
 	action Action `json:"action"`
@@ -36,9 +37,9 @@ func PacketData(cmd CMD, body string) []byte {
 func (receiver Bot) Handle(msg interface{}) {
 	switch msg.(type) {
 	case sendData:
-
+		receiver.sendData(msg.(sendData))
 	case recData:
-
+		receiver.recData(msg.(recData))
 	default:
 		panic("error.")
 	}
@@ -51,20 +52,21 @@ func (receiver Bot) sendData(s sendData) {
 			receiver.userinfo = NewLoginUserInfo()
 		}
 		receiver.userinfo.UpdateSend(s.Body)
-	case BuildingGetMainCityInfo:
+	case BuildingGetMainCity:
 		log.Log.Println("发送获取建筑信息...")
 	default:
 		log.Log.Println("SEND:", s.Command)
 	}
 }
 func (receiver Bot) recData(r recData) {
+	r.Print()
 	switch r.Command {
 	case LoginUser:
 		if receiver.userinfo == nil {
 			receiver.userinfo = NewLoginUserInfo()
 		}
 		receiver.userinfo.UpdateRec([]byte(r.Body))
-	case BuildingGetMainCityInfo:
+	case BuildingGetMainCity:
 		log.Log.Println("收到建筑信息...")
 	case PushPlayer:
 		log.Log.Println("收到广播信息...")

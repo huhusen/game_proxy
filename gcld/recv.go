@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sockets-proxy/binaryext"
+	"sockets-proxy/log"
 	"sockets-proxy/util"
 )
 
@@ -51,6 +52,6 @@ func (r recData) Print() {
 	if r.Len == 0 {
 		return
 	}
-	fmt.Printf("RecvData:【%s】\nData:%s\nLen:%d\nCommand:%s\nToken:%d\nBody:%s \n", ToCMD(r.Command),
+	log.Log.Printf("RecvData:【%s】\nData:%s\nLen:%d\nCommand:%s\nToken:%d\nBody:%s \n", ToCMD(r.Command),
 		hex.EncodeToString(r.Data), r.Len, r.Command, r.Token, r.Body)
 }

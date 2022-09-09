@@ -3,6 +3,7 @@ module sockets-proxy
 go 1.18
 
 require (
+	github.com/bitly/go-simplejson v0.5.0
 	github.com/google/gopacket v1.1.19
 	github.com/husanpao/logrus-easy-formatter v0.0.0-20220819075302-5c8aca273d21
 	github.com/husanpao/timewriter v0.0.0-20220819075236-e7d649ec683c
@@ -11,6 +12,8 @@ require (
 )
 
 require (
+	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
+	github.com/kr/pretty v0.3.0 // indirect
 	github.com/stretchr/testify v1.7.2 // indirect
 	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d // indirect
 	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad // indirect
