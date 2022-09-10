@@ -3,7 +3,6 @@ package gcld
 import (
 	"encoding/hex"
 	"fmt"
-	"sockets-proxy/util"
 	"testing"
 )
 
@@ -37,7 +36,7 @@ func TestNewRequest(t *testing.T) {
 }
 func TestNewResp(t *testing.T) {
 	//0000004c6c6f67696e5f757365720000000000000000000000000000000000000000000000000000757365726b65793d3539636264353463363265363539353030636234633566323231313032623237
-	data := []byte(`{"action":{"state":1,"data":{"sessionId":"6B4EA2C4526A9C37B4498A0436F9E37A"}}}`)
-	m := util.NewMap(data)
-	fmt.Println(m)
+	//data := []byte(`{"action":{"state":1,"data":{"sessionId":"6B4EA2C4526A9C37B4498A0436F9E37A"}}}`)
+	//m := util.NewMap(data)
+	//fmt.Println(m)
 }

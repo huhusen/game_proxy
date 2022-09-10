@@ -38,6 +38,7 @@ func (s *Socket5) Send2Server(data []byte) {
 		log.Log.Infof("Send2Server :%s", hex.EncodeToString(data))
 		s.remote.Write(data)
 	}
+	time.Sleep(time.Millisecond * 50)
 }
 func (s *Socket5) Send2client(data []byte) {
 	if s.state {

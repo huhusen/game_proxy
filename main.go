@@ -56,20 +56,46 @@ func main() {
 	http.HandleFunc("/send", func(writer http.ResponseWriter, request *http.Request) {
 		count := request.FormValue("count")
 		cmd := request.FormValue("cmd")
-		c, _ := strconv.Atoi(count)
-		b, _ := hex.DecodeString(cmd)
-		go func(count_ int, cmd_ []byte) {
-			for i := 0; i < count_; i++ {
-				fmt.Println(i)
+
+		if cmd == "zc" {
+			go func() {
 				for _, proto := range proxyServer.Clients {
 					r, ok := proto.(*proxy.Socket5)
 					if ok {
-						r.Send2Server(cmd_)
+						for t := 0; t < 100; t++ {
+							for i := 1; i < 5; i++ {
+								for j := 1; j < 5; j++ {
+									gcld.NewChariotForgeSpInfoRequest(fmt.Sprintf("%d", i), fmt.Sprintf("%d", j)).Hex()
+									r.Send2Server(gcld.NewChariotForgeSpInfoRequest(fmt.Sprintf("%d", i), fmt.Sprintf("%d", j)).Data())
+								}
+								gcld.NewChariotGetBpInfoRequest(fmt.Sprintf("%d", i), "5").Hex()
+								r.Send2Server(gcld.NewChariotGetBpInfoRequest(fmt.Sprintf("%d", i), "5").Data())
+								gcld.NewChariotforgeBpInfoRequest(fmt.Sprintf("%d", i)).Hex()
+								r.Send2Server(gcld.NewChariotforgeBpInfoRequest(fmt.Sprintf("%d", i)).Data())
+							}
+						}
+
 					}
 				}
-				time.Sleep(time.Millisecond * 50)
-			}
-		}(c, b)
+			}()
+
+		} else {
+			c, _ := strconv.Atoi(count)
+			b, _ := hex.DecodeString(cmd)
+			go func(count_ int, cmd_ []byte) {
+				for i := 0; i < count_; i++ {
+					fmt.Println(i)
+					for _, proto := range proxyServer.Clients {
+						r, ok := proto.(*proxy.Socket5)
+						if ok {
+							r.Send2Server(cmd_)
+						}
+					}
+
+				}
+			}(c, b)
+		}
+
 		writer.Write([]byte("send success."))
 	})
 	go func() {
