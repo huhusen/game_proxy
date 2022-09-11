@@ -1,4 +1,9 @@
-package gcld
+package cmd
+
+import (
+	"sockets-proxy/util"
+	"sockets-proxy/util/binaryext"
+)
 
 type CMD string
 
@@ -35,4 +40,14 @@ func ToCMD(c CMD) (zh string) {
 		zh = string(c)
 	}
 	return
+}
+func PacketData(cmd CMD, body string) []byte {
+	bs := []byte(body)
+	writer := binaryext.NewByteArray()
+	writer.WriteInt(32 + 4 + len(bs))
+	writer.Write([]byte(cmd))
+	writer.WriteInt(0)
+	writer.Write(util.NewBuf(32 - len(cmd)))
+	writer.Write(bs)
+	return writer.Data()
 }

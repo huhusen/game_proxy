@@ -3,6 +3,8 @@ package gcld
 import (
 	"encoding/hex"
 	"fmt"
+	"sockets-proxy/gcld/cmd/chariot"
+
 	"testing"
 )
 
@@ -27,12 +29,14 @@ func TestRecv(t *testing.T) {
 }
 func TestNewRequest(t *testing.T) {
 	//0000004c6c6f67696e5f757365720000000000000000000000000000000000000000000000000000757365726b65793d3539636264353463363265363539353030636234633566323231313032623237
-	NewChariotForgeSpInfoRequest("1", "1").Hex()
-	NewChariotForgeSpInfoRequest("1", "2").Hex()
-	NewChariotForgeSpInfoRequest("1", "3").Hex()
-	NewChariotGetBpInfoRequest("1", "3").Hex()
-	NewChariotforgeBpInfoRequest("1").Hex()
-	NewChariotGetInfoRequest("3", "")
+
+	chariot.NewForgeSpInfoRequest("1", "1").Hex()
+
+	chariot.NewForgeSpInfoRequest("1", "2").Hex()
+	chariot.NewForgeSpInfoRequest("1", "3").Hex()
+	chariot.NewForgeSpInfoRequest("1", "3").Hex()
+	chariot.NewForgeBpInfoRequest("1").Hex()
+	chariot.NewGetInfoRequest("3", "")
 }
 func TestNewResp(t *testing.T) {
 	//0000004c6c6f67696e5f757365720000000000000000000000000000000000000000000000000000757365726b65793d3539636264353463363265363539353030636234633566323231313032623237

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os/exec"
 	"sockets-proxy/gcld"
+	"sockets-proxy/gcld/cmd/chariot"
 	"sockets-proxy/proxy"
 	"strconv"
 	"syscall"
@@ -65,13 +66,13 @@ func main() {
 						for t := 0; t < 100; t++ {
 							for i := 1; i < 5; i++ {
 								for j := 1; j < 5; j++ {
-									gcld.NewChariotForgeSpInfoRequest(fmt.Sprintf("%d", i), fmt.Sprintf("%d", j)).Hex()
-									r.Send2Server(gcld.NewChariotForgeSpInfoRequest(fmt.Sprintf("%d", i), fmt.Sprintf("%d", j)).Data())
+									chariot.NewForgeSpInfoRequest(fmt.Sprintf("%d", i), fmt.Sprintf("%d", j)).Hex()
+									r.Send2Server(chariot.NewForgeSpInfoRequest(fmt.Sprintf("%d", i), fmt.Sprintf("%d", j)).Data())
 								}
-								gcld.NewChariotGetBpInfoRequest(fmt.Sprintf("%d", i), "5").Hex()
-								r.Send2Server(gcld.NewChariotGetBpInfoRequest(fmt.Sprintf("%d", i), "5").Data())
-								gcld.NewChariotforgeBpInfoRequest(fmt.Sprintf("%d", i)).Hex()
-								r.Send2Server(gcld.NewChariotforgeBpInfoRequest(fmt.Sprintf("%d", i)).Data())
+								chariot.NewGetBpInfoRequest(fmt.Sprintf("%d", i), "5").Hex()
+								r.Send2Server(chariot.NewGetBpInfoRequest(fmt.Sprintf("%d", i), "5").Data())
+								chariot.NewForgeBpInfoRequest(fmt.Sprintf("%d", i)).Hex()
+								r.Send2Server(chariot.NewForgeBpInfoRequest(fmt.Sprintf("%d", i)).Data())
 							}
 						}
 

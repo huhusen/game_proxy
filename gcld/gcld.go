@@ -1,13 +1,13 @@
 package gcld
 
 import (
-	"sockets-proxy/binaryext"
-	"sockets-proxy/log"
-	"sockets-proxy/util"
+	"sockets-proxy/gcld/cmd"
+	"sockets-proxy/gcld/cmd/login"
+	"sockets-proxy/util/log"
 )
 
 type Bot struct {
-	userinfo *LoginUserInfo
+	userinfo *login.UserInfo
 }
 type M interface {
 	Data() []byte
@@ -24,16 +24,7 @@ type Action struct {
 func NewBot() Bot {
 	return Bot{}
 }
-func PacketData(cmd CMD, body string) []byte {
-	bs := []byte(body)
-	writer := binaryext.NewByteArray()
-	writer.WriteInt(32 + 4 + len(bs))
-	writer.Write([]byte(cmd))
-	writer.WriteInt(0)
-	writer.Write(util.NewBuf(32 - len(cmd)))
-	writer.Write(bs)
-	return writer.Data()
-}
+
 func (receiver Bot) Handle(msg interface{}) {
 	switch msg.(type) {
 	case sendData:
@@ -47,12 +38,12 @@ func (receiver Bot) Handle(msg interface{}) {
 func (receiver Bot) sendData(s sendData) {
 	s.Print()
 	switch s.Command {
-	case LoginUser:
+	case cmd.LoginUser:
 		if receiver.userinfo == nil {
-			receiver.userinfo = NewLoginUserInfo()
+			receiver.userinfo = login.NewUserInfo()
 		}
 		receiver.userinfo.UpdateSend(s.Body)
-	case BuildingGetMainCity:
+	case cmd.BuildingGetMainCity:
 		log.Log.Println("发送获取建筑信息...")
 	default:
 		log.Log.Println("SEND:", s.Command)
@@ -61,16 +52,16 @@ func (receiver Bot) sendData(s sendData) {
 func (receiver Bot) recData(r recData) {
 	r.Print()
 	switch r.Command {
-	case LoginUser:
+	case cmd.LoginUser:
 		if receiver.userinfo == nil {
-			receiver.userinfo = NewLoginUserInfo()
+			receiver.userinfo = login.NewUserInfo()
 		}
 		receiver.userinfo.UpdateRec([]byte(r.Body))
-	case BuildingGetMainCity:
+	case cmd.BuildingGetMainCity:
 		log.Log.Println("收到建筑信息...")
-	case PushPlayer:
+	case cmd.PushPlayer:
 		log.Log.Println("收到广播信息...")
-	case PushChat:
+	case cmd.PushChat:
 		log.Log.Println("收到聊天信息...")
 	default:
 		log.Log.Println("REC:", r.Command)
