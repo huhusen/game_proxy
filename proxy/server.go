@@ -4,7 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"net"
-	"sockets-proxy/log"
+	"sockets-proxy/util/log"
+
 	"time"
 )
 

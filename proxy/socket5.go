@@ -7,7 +7,8 @@ import (
 	"fmt"
 	"io"
 	"net"
-	"sockets-proxy/log"
+	"sockets-proxy/util/log"
+
 	"sockets-proxy/util"
 	"strconv"
 	"time"
@@ -33,6 +34,12 @@ const (
 	SocketClient = "client"
 )
 
+func (s *Socket5) GameServerConn() *net.Conn {
+	return &s.remote
+}
+func (s *Socket5) GameClientConn() *net.Conn {
+	return &s.client.conn
+}
 func (s *Socket5) Send2Server(data []byte) {
 	if s.state {
 		log.Log.Infof("Send2Server :%s", hex.EncodeToString(data))

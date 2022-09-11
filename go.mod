@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/bitly/go-simplejson v0.5.0
-	github.com/google/gopacket v1.1.19
 	github.com/husanpao/logrus-easy-formatter v0.0.0-20220819075302-5c8aca273d21
 	github.com/husanpao/timewriter v0.0.0-20220819075236-e7d649ec683c
 	github.com/r3labs/sse/v2 v2.8.1
