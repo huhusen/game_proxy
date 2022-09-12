@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"net"
+	"net/http"
 	"sockets-proxy/util/log"
 
 	"time"
@@ -20,6 +21,8 @@ type Server struct {
 	listener               *net.TCPListener
 	OnSocket5ResponseEvent func(message []byte) (out []byte)
 	OnSocket5RequestEvent  func(message []byte) (out []byte)
+	OnHttpRequestEvent     func(request *http.Request)
+	OnHttpResponseEvent    func(response *http.Response)
 	Clients                map[string]interface{}
 }
 type Protocol interface {
@@ -87,14 +90,15 @@ func (s *Server) handle(conn net.Conn) {
 	client := Client{proxy: s, conn: conn, writer: writer, reader: reader}
 	switch peekHex {
 	case "0x47", "0x43", "0x50", "0x4f", "0x44", "0x48":
-		log.Log.Info("http.")
-		return
+		protocol = &ProxyHttp{client: client}
+		break
 	case "0x5":
 		protocol = &Socket5{client: client, state: false}
+		s.Clients = make(map[string]interface{})
+		s.Clients[conn.RemoteAddr().String()] = protocol
 	default:
 		log.Log.Info("tcp.")
 	}
-	s.Clients = make(map[string]interface{})
-	s.Clients[conn.RemoteAddr().String()] = protocol
+
 	protocol.Handle()
 }

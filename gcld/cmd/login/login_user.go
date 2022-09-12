@@ -2,36 +2,38 @@ package login
 
 import (
 	"fmt"
+	"github.com/goinggo/mapstructure"
 	"sockets-proxy/gcld/cmd"
-
-	"sockets-proxy/util"
 )
 
 type UserInfo struct {
-	Send struct {
+	cmd.Command
+	Send2 struct {
 		userkey string
 	}
-	Rec struct {
-		sessionId string
+	Rec2 struct {
+		SessionID string `json:"sessionId"`
 	}
 }
 
 func NewUserInfoRequest(userkey string) *UserInfo {
-	return &UserInfo{Send: struct{ userkey string }{userkey: userkey}}
+	return &UserInfo{Send2: struct{ userkey string }{userkey: userkey}}
 }
 
 func NewUserInfo() *UserInfo {
-	return &UserInfo{}
+	u := UserInfo{}
+	u.Cmd = cmd.LoginUser
+	u.Zh = "【登录】用户登录"
+	u.Send = u.Send2
+	u.Rec = u.Rec2
+	return &u
 }
-func (l UserInfo) UpdateRec(data []byte) {
-	m := util.NewJSon(data)
-	l.Rec.sessionId = m.Get("sessionId").MustString("")
+
+func (c *UserInfo) Data() []byte {
+	body := fmt.Sprintf("userkey=%s", c.Send2.userkey)
+	return c.PacketData(body)
 }
-func (l UserInfo) UpdateSend(data string) {
-	m := util.NewMap(data)
-	l.Send.userkey = m["userkey"]
-}
-func (l UserInfo) Data() []byte {
-	body := fmt.Sprintf("userkey=%s", l.Send.userkey)
-	return cmd.PacketData(cmd.LoginUser, body)
+func (c *UserInfo) Update() {
+	mapstructure.Decode(c.Map(), &c.Rec2)
+	fmt.Println()
 }

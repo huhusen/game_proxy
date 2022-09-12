@@ -19,39 +19,24 @@ var (
 	//go:embed ui
 	res       embed.FS
 	sseServer *sse.Server
-	bot       gcld.Bot
+	bot       *gcld.Bot
 )
-
-func PushMsg(id, data string) {
-	sseServer.Publish(id, &sse.Event{Data: []byte(data)})
-}
-
-func OnSocket5RequestEvent(message []byte) (out []byte) {
-	s := gcld.NewSendData(message)
-	bot.Handle(gcld.NewSendData(message))
-	PushMsg("msg", hex.EncodeToString(s.Data))
-	PushMsg("msg", s.String())
-	return
-}
-
-func OnSocket5ResponseEvent(message []byte) (out []byte) {
-	r := gcld.NewRecvData(message)
-	bot.Handle(r)
-	PushMsg("msg", r.String())
-	return
-}
 
 func main() {
 	bot = gcld.NewBot()
 	sseServer = sse.New()
 	sseServer.CreateStream("msg")
+	bot.SseServer = sseServer
 	proxyServer := proxy.NewServer(1888)
-	proxyServer.OnSocket5ResponseEvent = OnSocket5ResponseEvent
-	proxyServer.OnSocket5RequestEvent = OnSocket5RequestEvent
+	proxyServer.OnSocket5ResponseEvent = bot.OnSocket5ResponseEvent
+	proxyServer.OnSocket5RequestEvent = bot.OnSocket5RequestEvent
+	proxyServer.OnHttpRequestEvent = bot.OnHttpRequestEvent
+	proxyServer.OnHttpResponseEvent = bot.OnHttpResponseEvent
+	proxyServer.Start()
 	http.Handle("/", http.FileServer(http.FS(res)))
 	http.HandleFunc("/msg", sseServer.ServeHTTP)
 	http.HandleFunc("/start", func(writer http.ResponseWriter, request *http.Request) {
-		go proxyServer.Start()
+		//go proxyServer.Start()
 		writer.Write([]byte("proxyServer started."))
 	})
 	http.HandleFunc("/send", func(writer http.ResponseWriter, request *http.Request) {
@@ -66,8 +51,8 @@ func main() {
 						for t := 0; t < 100; t++ {
 							for i := 1; i < 5; i++ {
 								for j := 1; j < 5; j++ {
-									chariot.NewForgeSpInfoRequest(fmt.Sprintf("%d", i), fmt.Sprintf("%d", j)).Hex()
-									r.Send2Server(chariot.NewForgeSpInfoRequest(fmt.Sprintf("%d", i), fmt.Sprintf("%d", j)).Data())
+									chariot.NewForgeSpRequest(fmt.Sprintf("%d", i), fmt.Sprintf("%d", j)).Hex()
+									r.Send2Server(chariot.NewForgeSpRequest(fmt.Sprintf("%d", i), fmt.Sprintf("%d", j)).Data())
 								}
 								chariot.NewGetBpInfoRequest(fmt.Sprintf("%d", i), "5").Hex()
 								r.Send2Server(chariot.NewGetBpInfoRequest(fmt.Sprintf("%d", i), "5").Data())
@@ -103,7 +88,7 @@ func main() {
 		time.Sleep(time.Second * 1)
 		cmd := exec.Command(`cmd`, `/c`, `start`, `http://127.0.0.1:36134/ui/`)
 		cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-		cmd.Start()
+		//cmd.Start()
 	}()
 	http.ListenAndServe(":36134", nil)
 

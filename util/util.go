@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/zlib"
 	"github.com/bitly/go-simplejson"
+	"github.com/goinggo/mapstructure"
 	"io"
 	"net"
 	"strings"
@@ -33,6 +34,15 @@ func NewJSon(data []byte) *simplejson.Json {
 		return nil
 	}
 	return js.Get("action").Get("data")
+}
+func Byte2Struct(data []byte, s interface{}) {
+	j := NewJSon(data)
+	m, _ := j.Map()
+	mapstructure.Decode(m, s)
+
+}
+func Map2Struct(param string, s interface{}) {
+	mapstructure.Decode(NewMap(param), s)
 }
 
 // ZlibCompress 进行zlib压缩
