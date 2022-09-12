@@ -28,7 +28,13 @@ func NewChat() *Chat {
 	u.Rec = u.Rec2
 	return &u
 }
-func (c *Chat) Update() {
+
+func (c *Chat) Update1() {
 	mapstructure.Decode(c.Map(), &c.Rec2)
 	fmt.Println()
 }
+
+//func (c *GetPlayerList) Update2() {
+//	util.Map2Struct(c.Send.(string), &c.Send2)
+//	fmt.Println()
+//}

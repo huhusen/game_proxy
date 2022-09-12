@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"sockets-proxy/util"
 	"sockets-proxy/util/binaryext"
@@ -17,7 +18,8 @@ type Command struct {
 
 func (c *Command) UpdateRec(data []byte) {
 	util.Byte2Struct(data, &c.Rec)
-	log.Log.Infof("接收%s数据", c.Zh)
+	s, _ := json.Marshal(c.Rec)
+	log.Log.Infof("接收%s数据,Data:\n%s", c.Zh, string(s))
 }
 func (c *Command) UpdateSend(data string) {
 	util.Map2Struct(data, &c.Send)

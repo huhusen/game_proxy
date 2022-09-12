@@ -28,7 +28,13 @@ func NewBuilding() *Building {
 	u.Rec = u.Rec2
 	return &u
 }
-func (c *Building) Update() {
+
+func (c *Building) Update1() {
 	mapstructure.Decode(c.Map(), &c.Rec2)
 	fmt.Println()
 }
+
+//func (c *GetPlayerList) Update2() {
+//	util.Map2Struct(c.Send.(string), &c.Send2)
+//	fmt.Println()
+//}

@@ -39,7 +39,13 @@ func NewGetPlayerList() *GetPlayerList {
 	p.Rec = p.Rec2
 	return p
 }
-func (c *GetPlayerList) Update() {
+
+func (c *GetPlayerList) Update1() {
 	mapstructure.Decode(c.Map(), &c.Rec2)
 	fmt.Println()
 }
+
+//func (c *GetPlayerList) Update2() {
+//	util.Map2Struct(c.Send.(string), &c.Send2)
+//	fmt.Println()
+//}

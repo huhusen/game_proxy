@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/goinggo/mapstructure"
 	"sockets-proxy/gcld/cmd"
+	"sockets-proxy/util"
 )
 
 //  ForgeSp
@@ -50,7 +51,11 @@ func (l *ForgeSp) Data() []byte {
 	body := fmt.Sprintf("zcjd=0&bpId=%s&spId=%s&buffId=0", l.Send2.bpId, l.Send2.spId)
 	return l.PacketData(body)
 }
-func (c *ForgeSp) Update() {
+func (c *ForgeSp) Update1() {
 	mapstructure.Decode(c.Map(), &c.Rec2)
+	fmt.Println()
+}
+func (c *ForgeSp) Update2() {
+	util.Map2Struct(c.Send.(string), &c.Send2)
 	fmt.Println()
 }

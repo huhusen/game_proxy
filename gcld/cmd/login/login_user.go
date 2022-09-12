@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/goinggo/mapstructure"
 	"sockets-proxy/gcld/cmd"
+	"sockets-proxy/util"
 )
 
 type UserInfo struct {
@@ -33,7 +34,12 @@ func (c *UserInfo) Data() []byte {
 	body := fmt.Sprintf("userkey=%s", c.Send2.userkey)
 	return c.PacketData(body)
 }
-func (c *UserInfo) Update() {
+
+func (c *UserInfo) Update1() {
 	mapstructure.Decode(c.Map(), &c.Rec2)
+	fmt.Println()
+}
+func (c *UserInfo) Update2() {
+	util.Map2Struct(c.Send.(string), &c.Send2)
 	fmt.Println()
 }

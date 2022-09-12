@@ -90,19 +90,19 @@ func (bot *Bot) RecData(r cmd.RecData) {
 	switch r.Command {
 	case cmd.LoginUser:
 		bot.loginUserinfo.UpdateRec(r.BodyByte)
-		bot.loginUserinfo.Update()
+		bot.loginUserinfo.Update1()
 	case cmd.BuildingGetMainCityInfo:
 		bot.buildingMaincityinfo.UpdateRec(r.BodyByte)
-		bot.buildingMaincityinfo.Update()
+		bot.buildingMaincityinfo.Update1()
 	case cmd.PushPlayer:
 		bot.pushPlayer.UpdateRec(r.BodyByte)
-		bot.pushPlayer.Update()
+		bot.pushPlayer.Update1()
 	case cmd.PushBuilding:
 		bot.pushBuilding.UpdateRec(r.BodyByte)
-		bot.pushBuilding.Update()
+		bot.pushBuilding.Update1()
 	case cmd.PushNotice:
 		bot.pushNotice.UpdateRec(r.BodyByte)
-		bot.pushNotice.Update()
+		bot.pushNotice.Update1()
 	default:
 		log.Log.Infof("Rec:%s\nBody:%s", r.Command, r.Body)
 	}
