@@ -835,7 +835,6 @@ func NewGetPlayerInfo() *GetPlayerInfo {
 	p := &GetPlayerInfo{}
 	p.Zh = "【玩家】获取用户信息"
 	p.Cmd = cmd.PlayerGetPlayerInfo
-	p.Rec = &p.Rec2
 	return p
 }
 

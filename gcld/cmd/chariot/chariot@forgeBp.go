@@ -16,8 +16,6 @@ func NewForgeBpInfo() *ForgeBp {
 	u := ForgeBp{}
 	u.Cmd = cmd.ChariotforgeBp
 	u.Zh = "【战车】战车部件改造"
-	u.Send = u.Send2
-	//u.Rec = u.Rec2
 	return &u
 }
 

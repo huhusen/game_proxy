@@ -22,8 +22,8 @@ func (c *Command) UpdateRec(data []byte) {
 	log.Log.Infof("接收%s数据,Data:\n%s", c.Zh, string(s))
 }
 func (c *Command) UpdateSend(data string) {
-	util.Map2Struct(data, &c.Send)
-	log.Log.Infof("发送%s数据", c.Zh)
+	c.Send = data
+	log.Log.Infof("发送%s数据,Data:%s", c.Zh, data)
 }
 func (c *Command) Name() string {
 	return c.Zh

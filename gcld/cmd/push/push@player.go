@@ -19,8 +19,6 @@ func NewPlayer() *Player {
 	u := Player{}
 	u.Cmd = cmd.PushPlayer
 	u.Zh = "【推送】用户信息"
-	//u.Send = u.Send2
-	u.Rec = u.Rec2
 	return &u
 }
 

@@ -17,13 +17,15 @@ type Bot struct {
 }
 
 type Game struct {
-	loginUserinfo        *login.UserInfo
-	playerPlayerinfo     *player.GetPlayerInfo
-	playerPlayerlist     *player.GetPlayerList
-	buildingMaincityinfo *building.GetMainCityInfo
-	pushPlayer           *push.Player
-	pushBuilding         *push.Building
-	pushNotice           *push.Notice
+	loginUserinfo           *login.UserInfo
+	playerPlayerinfo        *player.GetPlayerInfo
+	playerPlayerlist        *player.GetPlayerList
+	buildingMaincityinfo    *building.GetMainCityInfo
+	buildingGetBuildingInfo *building.GetBuildingInfo
+	pushPlayer              *push.Player
+	pushChat                *push.Chat
+	pushBuilding            *push.Building
+	pushNotice              *push.Notice
 }
 
 func NewBot() *Bot {
@@ -35,7 +37,9 @@ func NewBot() *Bot {
 	bot.pushPlayer = push.NewPlayer()
 	bot.pushBuilding = push.NewBuilding()
 	bot.pushNotice = push.NewNotice()
-	go bot.Task()
+	bot.buildingGetBuildingInfo = building.NewGetBuildingInfo()
+	bot.pushChat = push.NewChat()
+	//go bot.Task()
 	return bot
 }
 
@@ -76,8 +80,10 @@ func (bot *Bot) SendData(s cmd.SendData) {
 		bot.pushPlayer.UpdateSend(s.Body)
 	case cmd.PushBuilding:
 		bot.pushBuilding.UpdateSend(s.Body)
+	case cmd.BuildingGetBuildingInfo:
+		bot.buildingGetBuildingInfo.UpdateSend(s.Body)
 	default:
-		log.Log.Infof("SEND:%s\nBody:%s", s.Command, s.Body)
+		log.Log.Infof("SEND:%s Body:%s", s.Command, s.Body)
 	}
 }
 
@@ -103,7 +109,11 @@ func (bot *Bot) RecData(r cmd.RecData) {
 	case cmd.PushNotice:
 		bot.pushNotice.UpdateRec(r.BodyByte)
 		bot.pushNotice.Update1()
+	case cmd.BuildingGetBuildingInfo:
+		bot.buildingGetBuildingInfo.UpdateRec(r.BodyByte)
+		bot.buildingGetBuildingInfo.Update1()
+
 	default:
-		log.Log.Infof("Rec:%s\nBody:%s", r.Command, r.Body)
+		log.Log.Infof("Rec:%s Body:%s", r.Command, r.Body)
 	}
 }

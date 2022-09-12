@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/goinggo/mapstructure"
 	"sockets-proxy/gcld/cmd"
-	"sockets-proxy/util"
 )
 
 type UserInfo struct {
@@ -25,8 +24,6 @@ func NewUserInfo() *UserInfo {
 	u := UserInfo{}
 	u.Cmd = cmd.LoginUser
 	u.Zh = "【登录】用户登录"
-	u.Send = u.Send2
-	u.Rec = u.Rec2
 	return &u
 }
 
@@ -37,9 +34,5 @@ func (c *UserInfo) Data() []byte {
 
 func (c *UserInfo) Update1() {
 	mapstructure.Decode(c.Map(), &c.Rec2)
-	fmt.Println()
-}
-func (c *UserInfo) Update2() {
-	util.Map2Struct(c.Send.(string), &c.Send2)
 	fmt.Println()
 }

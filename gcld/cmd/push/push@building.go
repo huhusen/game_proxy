@@ -24,8 +24,6 @@ func NewBuilding() *Building {
 	u := Building{}
 	u.Cmd = cmd.PushBuilding
 	u.Zh = "【推送】建筑信息"
-	//u.Send = u.Send2
-	u.Rec = u.Rec2
 	return &u
 }
 

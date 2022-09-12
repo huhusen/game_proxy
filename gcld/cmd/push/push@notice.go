@@ -20,8 +20,6 @@ func NewNotice() *Notice {
 	u := Notice{}
 	u.Cmd = cmd.PushNotice
 	u.Zh = "【推送】通知"
-	//u.Send = u.Send2
-	u.Rec = u.Rec2
 	return &u
 }
 

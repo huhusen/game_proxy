@@ -58,7 +58,6 @@ func NewGetMainCityInfo() *GetMainCityInfo {
 	p := &GetMainCityInfo{}
 	p.Zh = "【建筑】获取主城信息"
 	p.Cmd = cmd.BuildingGetMainCityInfo
-	p.Rec = p.Rec2
 	return p
 }
 func (c *GetMainCityInfo) Update1() {

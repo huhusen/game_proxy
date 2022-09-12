@@ -36,7 +36,6 @@ func NewGetPlayerList() *GetPlayerList {
 	p := &GetPlayerList{}
 	p.Zh = "【玩家】获取用户列表信息"
 	p.Cmd = cmd.PlayerGetPlayerList
-	p.Rec = p.Rec2
 	return p
 }
 

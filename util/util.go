@@ -23,7 +23,11 @@ func NewMap(param string) map[string]string {
 		return nil
 	} else {
 		for i := 0; i < len(arr); i = i + 2 {
-			m[arr[i]] = arr[i+1]
+			if arr[i] != "type" {
+				m[arr[i]] = arr[i+1]
+			} else {
+				m["types"] = arr[i+1]
+			}
 		}
 	}
 	return m
@@ -42,7 +46,7 @@ func Byte2Struct(data []byte, s interface{}) {
 
 }
 func Map2Struct(param string, s interface{}) {
-	mapstructure.Decode(NewMap(param), s)
+	mapstructure.Decode(NewMap(param), &s)
 }
 
 // ZlibCompress 进行zlib压缩
