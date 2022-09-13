@@ -2,51 +2,24 @@ package gcld
 
 import (
 	"github.com/r3labs/sse/v2"
-	"sockets-proxy/gcld/cmd"
-	"sockets-proxy/gcld/cmd/building"
-	"sockets-proxy/gcld/cmd/login"
-	"sockets-proxy/gcld/cmd/player"
-	"sockets-proxy/gcld/cmd/push"
 	"sockets-proxy/util/log"
+
 	"time"
 )
 
 type Bot struct {
-	Game
-	SseServer *sse.Server
-}
-
-type Game struct {
-	loginUserinfo           *login.UserInfo
-	playerPlayerinfo        *player.GetPlayerInfo
-	playerPlayerlist        *player.GetPlayerList
-	buildingMaincityinfo    *building.GetMainCityInfo
-	buildingGetBuildingInfo *building.GetBuildingInfo
-	pushPlayer              *push.Player
-	pushChat                *push.Chat
-	pushBuilding            *push.Building
-	pushNotice              *push.Notice
+	SseServer     *sse.Server
+	pluginManager *PluginManager
 }
 
 func NewBot() *Bot {
 	bot := &Bot{}
-	bot.loginUserinfo = login.NewUserInfo()
-	bot.playerPlayerinfo = player.NewGetPlayerInfo()
-	bot.playerPlayerlist = player.NewGetPlayerList()
-	bot.buildingMaincityinfo = building.NewGetMainCityInfo()
-	bot.pushPlayer = push.NewPlayer()
-	bot.pushBuilding = push.NewBuilding()
-	bot.pushNotice = push.NewNotice()
-	bot.buildingGetBuildingInfo = building.NewGetBuildingInfo()
-	bot.pushChat = push.NewChat()
-	//go bot.Task()
+	bot.pluginManager = NewPluginManager("./plugins")
 	return bot
 }
 
 func (bot *Bot) Task() {
 	for true {
-
-		log.Log.Infof("当前登录用户：%s", bot.playerPlayerinfo.Rec2.Player.PlayerName)
 		time.Sleep(time.Second * 5)
 	}
 }
@@ -54,66 +27,18 @@ func (bot *Bot) Task() {
 func (bot *Bot) PushMsg(id, data string) {
 	bot.SseServer.Publish(id, &sse.Event{Data: []byte(data)})
 }
-func (bot *Bot) Handle(msg interface{}) {
-	switch msg.(type) {
-	case cmd.SendData:
-		bot.SendData(msg.(cmd.SendData))
-	case cmd.RecData:
-		bot.RecData(msg.(cmd.RecData))
-	default:
-		panic("error.")
-	}
-}
+func (bot *Bot) Handle(msg Data) {
+	if plugin, ok := bot.pluginManager.plugins[msg.Command]; ok {
+		r, err := plugin.Vm.Call("Plugin.Receive", nil, msg.Type, msg.Body)
+		if err != nil {
+			log.Log.Errorf("call plugin %s Plugin.Receive error ->%s", plugin.Command, err.Error())
+		}
+		result := r.String()
+		if result != "0" {
+			log.Log.Infof(result)
+		}
 
-// SendData
-//
-//	@Description:
-//	@receiver bot
-//	@param s
-func (bot *Bot) SendData(s cmd.SendData) {
-	switch s.Command {
-	case cmd.LoginUser:
-		bot.loginUserinfo.UpdateSend(s.Body)
-	case cmd.BuildingGetMainCityInfo:
-		bot.buildingMaincityinfo.UpdateSend(s.Body)
-	case cmd.PushPlayer:
-		bot.pushPlayer.UpdateSend(s.Body)
-	case cmd.PushBuilding:
-		bot.pushBuilding.UpdateSend(s.Body)
-	case cmd.BuildingGetBuildingInfo:
-		bot.buildingGetBuildingInfo.UpdateSend(s.Body)
-	default:
-		log.Log.Infof("SEND:%s Body:%s", s.Command, s.Body)
-	}
-}
-
-// RecData
-//
-//	@Description:
-//	@receiver bot
-//	@param r
-func (bot *Bot) RecData(r cmd.RecData) {
-	switch r.Command {
-	case cmd.LoginUser:
-		bot.loginUserinfo.UpdateRec(r.BodyByte)
-		bot.loginUserinfo.Update1()
-	case cmd.BuildingGetMainCityInfo:
-		bot.buildingMaincityinfo.UpdateRec(r.BodyByte)
-		bot.buildingMaincityinfo.Update1()
-	case cmd.PushPlayer:
-		bot.pushPlayer.UpdateRec(r.BodyByte)
-		bot.pushPlayer.Update1()
-	case cmd.PushBuilding:
-		bot.pushBuilding.UpdateRec(r.BodyByte)
-		bot.pushBuilding.Update1()
-	case cmd.PushNotice:
-		bot.pushNotice.UpdateRec(r.BodyByte)
-		bot.pushNotice.Update1()
-	case cmd.BuildingGetBuildingInfo:
-		bot.buildingGetBuildingInfo.UpdateRec(r.BodyByte)
-		bot.buildingGetBuildingInfo.Update1()
-
-	default:
-		log.Log.Infof("Rec:%s Body:%s", r.Command, r.Body)
+	} else {
+		log.Log.Infof("\n【%s】\nCommand:%s\nBody:%s", msg.Type, msg.Command, msg.Body)
 	}
 }

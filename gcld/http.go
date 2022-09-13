@@ -26,8 +26,8 @@ func (bot *Bot) OnHttpResponseEvent(response *http.Response) {
 			body = util.ZlibUnCompress(body)
 			str := string(body)
 			if strings.Contains(str, "blackNames") {
-				bot.playerPlayerinfo.UpdateRec(body)
-				bot.playerPlayerinfo.Update1()
+				//bot.playerPlayerinfo.UpdateRec(body)
+				//bot.playerPlayerinfo.Update1()
 				fmt.Println()
 			}
 			//else if strings.Contains(str, "playerList") {

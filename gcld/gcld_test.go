@@ -3,6 +3,9 @@ package gcld
 import (
 	"encoding/hex"
 	"fmt"
+	"github.com/robertkrimen/otto"
+	_ "github.com/robertkrimen/otto"
+	"os"
 	"sockets-proxy/gcld/cmd"
 	"sockets-proxy/gcld/cmd/chariot"
 	"sockets-proxy/gcld/cmd/player"
@@ -50,4 +53,19 @@ func TestJson(t *testing.T) {
 	playerinfo := player.GetPlayerInfo{}
 	util.Byte2Struct([]byte(s), playerinfo.Rec)
 	fmt.Println()
+}
+func TestJs(t *testing.T) {
+	bs, _ := os.ReadFile("../plugins/login_user.js")
+	n := otto.New()
+	//n.Set("", func(call otto.FunctionCall) otto.Value {
+	//	fmt.Printf("Hello, %s.\n", call.Argument(0).String())
+	//	fmt.Printf("Hello2, %s.\n", call.Argument(1).String())
+	//	result, _ := n.ToValue("123")
+	//	return result
+	//})
+	n.Run(bs)
+
+	v, _ := n.Call("Plugin.Receive", nil, "123", "456")
+
+	println(v.String())
 }

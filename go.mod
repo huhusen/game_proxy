@@ -8,7 +8,9 @@ require (
 	github.com/husanpao/logrus-easy-formatter v0.0.0-20220819075302-5c8aca273d21
 	github.com/husanpao/timewriter v0.0.0-20220819075236-e7d649ec683c
 	github.com/r3labs/sse/v2 v2.8.1
+	github.com/robertkrimen/otto v0.0.0-20211024170158-b87d35c0b86f
 	github.com/sirupsen/logrus v1.8.1
+
 )
 
 require (
@@ -18,4 +20,5 @@ require (
 	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d // indirect
 	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad // indirect
 	gopkg.in/cenkalti/backoff.v1 v1.1.0 // indirect
+	gopkg.in/sourcemap.v1 v1.0.5 // indirect
 )
